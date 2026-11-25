@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест: Квадрат үшмүше және оның түбірлері</title>
+<style>
+  /* ====== Академиялық дизайн ====== */
+  :root{
+    --ink:#1f2933; --muted:#5b6670; --line:#d5d9de; --bg:#f6f6f3;
+    --paper:#ffffff; --accent:#1d3a5f; --accent-soft:#e8edf3;
+    --ok:#2e6b3a; --warn:#8a5a00; --bad:#9b2c2c;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+    font-family:"Times New Roman", Georgia, "PT Serif", serif;font-size:18px;line-height:1.5}
+  .wrap{max-width:760px;margin:0 auto;padding:24px 16px 40px}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:28px 26px}
+  h1{font-size:1.35rem;margin:0 0 6px;font-weight:bold;color:var(--accent);text-align:center}
+  .sub{text-align:center;color:var(--muted);margin:0 0 4px}
+  hr{border:none;border-top:1px solid var(--line);margin:18px 0}
+  .info{width:100%;border-collapse:collapse;margin:8px 0 18px}
+  .info td{padding:6px 4px;border-bottom:1px solid #eceef0;vertical-align:top}
+  .info td:first-child{color:var(--muted);width:42%}
+  label.f{display:block;margin:14px 0 6px;font-weight:bold}
+  input[type=text], select{width:100%;padding:10px 12px;font-size:1rem;font-family:inherit;
+    border:1px solid #b9c0c7;border-radius:4px;background:#fff;color:var(--ink)}
+  input[type=text]:focus, select:focus{outline:2px solid var(--accent-soft);border-color:var(--accent)}
+  .radios{display:flex;gap:12px;flex-wrap:wrap}
+  .radios label{flex:1;min-width:120px;border:1px solid #b9c0c7;border-radius:4px;padding:10px 12px;cursor:pointer;background:#fff}
+  .radios input{margin-right:8px}
+  .radios label.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .btn{display:inline-block;padding:11px 26px;font-size:1rem;font-family:inherit;border-radius:4px;
+    border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+  .btn:disabled{background:#c5cbd2;border-color:#c5cbd2;cursor:not-allowed}
+  .btn.ghost{background:#fff;color:var(--accent)}
+  .center{text-align:center}
+  .rules{font-size:.92rem;color:var(--muted);margin:16px 0 0;padding-left:20px}
+  .hidden{display:none !important}
+
+  /* Сұрақ беті */
+  .topbar{display:flex;justify-content:space-between;align-items:center;font-size:.95rem;color:var(--muted);margin-bottom:10px}
+  .timer{font-variant-numeric:tabular-nums;font-weight:bold;color:var(--accent);border:1px solid var(--line);padding:3px 10px;border-radius:4px;background:#fff}
+  .timer.low{color:var(--bad);border-color:var(--bad)}
+  .progress{height:4px;background:#e4e7ea;border-radius:2px;overflow:hidden;margin-bottom:18px}
+  .progress div{height:100%;background:var(--accent);width:0}
+  .qnum{font-weight:bold;color:var(--accent);margin-bottom:6px}
+  .qtext{font-size:1.08rem;margin-bottom:18px}
+  .math{font-family:"Times New Roman",serif;font-style:italic;white-space:nowrap}
+  .opts{list-style:none;padding:0;margin:0}
+  .opts li{margin:0 0 10px}
+  .opts label{display:flex;align-items:center;gap:12px;border:1px solid #c4cad0;border-radius:4px;padding:11px 14px;cursor:pointer;background:#fff}
+  .opts label:hover{border-color:var(--accent)}
+  .opts input{width:18px;height:18px;flex:none}
+  .opts label.sel{border-color:var(--accent);background:var(--accent-soft)}
+  .letter{font-weight:bold;color:var(--muted);width:22px}
+  .numbox{max-width:320px}
+  .numbox input{font-size:1.15rem;text-align:center}
+  .minus{margin-top:10px;width:100%;padding:10px;font-size:1rem;font-family:inherit;border:1px solid #9aa4ae;border-radius:4px;background:#fafafa;cursor:pointer}
+  .hint{font-size:.88rem;color:var(--muted);margin-top:8px}
+  .nav{margin-top:26px;text-align:right}
+  .frac{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;font-style:normal;line-height:1.1;margin:0 2px}
+  .frac span:first-child{border-bottom:1px solid currentColor;padding:0 2px}
+
+  /* Ескерту терезесі */
+  .overlay{position:fixed;inset:0;background:rgba(20,25,30,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:50}
+  .modal{background:#fff;max-width:460px;width:100%;border-radius:6px;padding:24px;border-top:4px solid var(--warn)}
+  .modal h2{margin:0 0 10px;font-size:1.15rem;color:var(--warn)}
+  .modal p{margin:0 0 14px}
+
+  /* Нәтиже */
+  .score{font-size:2.6rem;font-weight:bold;color:var(--accent);text-align:center;margin:8px 0}
+  .res td{padding:6px 4px;border-bottom:1px solid #eceef0}
+  .status{font-size:.92rem;text-align:center;margin-top:14px;color:var(--muted)}
+  .status.ok{color:var(--ok)} .status.err{color:var(--bad)}
+  @media (max-width:520px){ .card{padding:20px 16px} html,body{font-size:17px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ================= БАСТАПҚЫ ТЕРЕЗЕ ================= -->
+  <div id="startScreen" class="card">
+    <h1>Тест</h1>
+    <p class="sub"><b>«Квадрат үшмүше және оның түбірлері»</b></p>
+    <hr>
+    <table class="info">
+      <tr><td>Пән:</td><td>Алгебра</td></tr>
+      <tr><td>Оқу мақсаты:</td><td>8.2.1.1 — квадрат үшмүшенің түбірі ұғымын меңгеру</td></tr>
+      <tr><td>Мұғалім:</td><td>математика пәнінің мұғалімі – Кунгозин Даулет Багдашұлы</td></tr>
+      <tr><td>Тапсырмалар саны:</td><td>10 (1 тапсырма – 1 балл, барлығы 10 балл)</td></tr>
+      <tr><td>Уақыт:</td><td>әр сұраққа 2,5 минут</td></tr>
+    </table>
+
+    <label class="f" for="fio">Аты-жөніңіз (тегі, аты):</label>
+    <input type="text" id="fio" autocomplete="off" placeholder="Введите ФИ">
+
+    <label class="f" for="klass">Сынып:</label>
+    <select id="klass">
+      <option value="">— сыныпты таңдаңыз —</option>
+      <option value="8Ә">8Ә</option>
+    </select>
+
+    <label class="f">Нұсқа:</label>
+    <div class="radios" id="variantBox">
+      <label><input type="radio" name="variant" value="1">1-нұсқа</label>
+      <label><input type="radio" name="variant" value="2">2-нұсқа</label>
+    </div>
+
+    <ul class="rules">
+      <li>Әр бетте бір сұрақ. Келесі сұраққа өткен соң, алдыңғыға оралуға болмайды.</li>
+      <li>Уақыт біткенде келесі сұраққа автоматты түрде өтеді.</li>
+      <li>Тест кезінде бетті (қойындыны) жасыруға немесе басқа қосымшаға ауысуға болмайды — бұл жағдайда баға 1 балға төмендетіледі.</li>
+    </ul>
+
+    <div class="center" style="margin-top:22px">
+      <button class="btn" id="startBtn" disabled>Келесі →</button>
+    </div>
+  </div>
+
+  <!-- ================= СҰРАҚ БЕТІ ================= -->
+  <div id="quizScreen" class="card hidden">
+    <div class="topbar">
+      <span id="qCounter">Сұрақ 1 / 10</span>
+      <span class="timer" id="timer">02:30</span>
+    </div>
+    <div class="progress"><div id="progressBar"></div></div>
+    <div class="qnum" id="qNum"></div>
+    <div class="qtext" id="qText"></div>
+    <div id="qBody"></div>
+    <div class="nav">
+      <button class="btn" id="nextBtn">Келесі →</button>
+    </div>
+  </div>
+
+  <!-- ================= НӘТИЖЕ ================= -->
+  <div id="resultScreen" class="card hidden">
+    <h1>Тест аяқталды</h1>
+    <p class="sub" id="resName"></p>
+    <div class="score" id="resScore"></div>
+    <table class="info res" id="resTable"></table>
+    <div class="status" id="sendStatus">Нәтиже жіберілуде...</div>
+    <div class="center" style="margin-top:14px">
+      <button class="btn ghost hidden" id="resendBtn">Қайта жіберу</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ескерту терезесі -->
+<div class="overlay hidden" id="warnOverlay">
+  <div class="modal">
+    <h2>⚠ Ескерту!</h2>
+    <p>Сіз тест кезінде бетті (қойындыны) жасырдыңыз немесе басқа терезеге ауыстыңыз.</p>
+    <p><b>Бетті жасырған жағдайда бағаңыз 1 балға төмендетіледі.</b></p>
+    <p id="warnCount" style="color:var(--muted);font-size:.92rem"></p>
+    <div class="center"><button class="btn" id="warnOk">Тестті жалғастыру</button></div>
+  </div>
+</div>
+
+<script>
+/* =====================================================
+   НАСТРОЙКА: вставьте сюда URL веб-приложения Apps Script
+   (Развернуть → Новое развертывание → Веб-приложение)
+   ===================================================== */
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzqoz26qidvIrinzIfv6AECvFyvxVH1xbJDyffKqJtULNE5Pk0m1hHlWx9mi8hxPo8XPg/exec";
+
+const TIME_PER_Q = 150;   // 2,5 минут = 150 секунд
+const PENALTY = 1;        // бетті жасырғаны үшін айып
+
+/* Бөлшекті көрсету */
+function fr(a,b){return '<span class="frac"><span>'+a+'</span><span>'+b+'</span></span>';}
+function m(s){return '<span class="math">'+s+'</span>';}
+
+/* ================= СҰРАҚТАР =================
+   type: "mc" — бір дұрыс жауап (correct — дұрыс нұсқаның индексі)
+   type: "num" — сан енгізу (answer — дұрыс сан)                 */
+const VARIANTS = {
+"1":[
+ {type:"mc", q:"Төмендегі өрнектердің қайсысы <b>квадрат үшмүше</b> болады?",
+  opts:[m("2x<sup>2</sup> − 5x + 3"), m("5x + 3"), m("x<sup>3</sup> − 2x + 1"), m(fr("1","x<sup>2</sup>")+" + x − 4")], correct:0},
+ {type:"mc", q:"Квадрат үшмүшенің <b>түбірі</b> деп нені атайды?",
+  opts:["Үшмүшенің мәні нөлге тең болатын айнымалының мәнін",
+        "Үшмүшенің бос мүшесін (c санын)",
+        "Үшмүшенің ең үлкен мәнін",
+        "Бірінші коэффициент пен екінші коэффициенттің қосындысын"], correct:0},
+ {type:"mc", q:"Төмендегі сандардың қайсысы "+m("x<sup>2</sup> − 5x + 6")+" квадрат үшмүшесінің түбірі болады?",
+  opts:[m("2"), m("−2"), m("1"), m("5")], correct:0},
+ {type:"mc", q:m("x<sup>2</sup> − 4x − 12")+" квадрат үшмүшесінің түбірлерін табыңыз.",
+  opts:[m("6 және −2"), m("−6 және 2"), m("4 және 3"), m("12 және −1")], correct:0},
+ {type:"mc", q:"Төмендегі квадрат үшмүшелердің қайсысының <b>түбірі жоқ</b>?",
+  opts:[m("x<sup>2</sup> + 2x + 5"), m("x<sup>2</sup> − 2x − 3"), m("x<sup>2</sup> − 6x + 9"), m("2x<sup>2</sup> − x − 1")], correct:0},
+ {type:"mc", q:m("3x<sup>2</sup> − 7x + 2")+" квадрат үшмүшесінің түбірлерін табыңыз.",
+  opts:[m("2 және "+fr("1","3")), m("−2 және −"+fr("1","3")), m("1 және "+fr("2","3")), m("3 және "+fr("1","2"))], correct:0},
+ {type:"mc", q:m("x<sup>2</sup> − 10x + 25")+" квадрат үшмүшесінің неше түбірі бар?",
+  opts:["Бір түбірі бар","Екі түбірі бар","Түбірі жоқ","Шексіз көп түбірі бар"], correct:0},
+ {type:"mc", q:m("x = 3")+" саны "+m("x<sup>2</sup> + px − 12")+" квадрат үшмүшесінің түбірі. "+m("p")+" коэффициентін табыңыз.",
+  opts:[m("1"), m("−1"), m("4"), m("3")], correct:0},
+ {type:"num", q:m("x<sup>2</sup> + 3x − 10")+" квадрат үшмүшесінің түбірлерін табыңыз. Жауапқа <b>кіші түбірін</b> жазыңыз.",
+  answer:-5},
+ {type:"num", q:m("x = −2")+" саны "+m("x<sup>2</sup> − 3x + c")+" квадрат үшмүшесінің түбірі. "+m("c")+" санын табыңыз.",
+  answer:-10}
+],
+"2":[
+ {type:"mc", q:"Төмендегі өрнектердің қайсысы <b>квадрат үшмүше</b> болады?",
+  opts:[m("3x<sup>2</sup> + 4x − 7"), m("4x − 7"), m("x<sup>3</sup> + 4x<sup>2</sup>"), m(fr("3","x<sup>2</sup>")+" − 7")], correct:0},
+ {type:"mc", q:m("x<sub>0</sub>")+" саны "+m("ax<sup>2</sup> + bx + c")+" квадрат үшмүшесінің түбірі болса, онда:",
+  opts:[m("ax<sub>0</sub><sup>2</sup> + bx<sub>0</sub> + c = 0"), m("ax<sub>0</sub><sup>2</sup> + bx<sub>0</sub> + c = 1"),
+        m("ax<sub>0</sub><sup>2</sup> + bx<sub>0</sub> + c &gt; 0"), m("x<sub>0</sub> = c")], correct:0},
+ {type:"mc", q:"Төмендегі сандардың қайсысы "+m("x<sup>2</sup> + x − 12")+" квадрат үшмүшесінің түбірі болады?",
+  opts:[m("3"), m("−3"), m("4"), m("2")], correct:0},
+ {type:"mc", q:m("x<sup>2</sup> + 2x − 15")+" квадрат үшмүшесінің түбірлерін табыңыз.",
+  opts:[m("3 және −5"), m("−3 және 5"), m("5 және 3"), m("15 және −1")], correct:0},
+ {type:"mc", q:"Төмендегі квадрат үшмүшелердің қайсысының <b>түбірі жоқ</b>?",
+  opts:[m("2x<sup>2</sup> + x + 3"), m("x<sup>2</sup> − 4x + 4"), m("x<sup>2</sup> − x − 6"), m("3x<sup>2</sup> + 2x − 1")], correct:0},
+ {type:"mc", q:m("2x<sup>2</sup> − 5x + 2")+" квадрат үшмүшесінің түбірлерін табыңыз.",
+  opts:[m("2 және "+fr("1","2")), m("−2 және −"+fr("1","2")), m("1 және "+fr("5","2")), m("5 және "+fr("1","2"))], correct:0},
+ {type:"mc", q:m("9x<sup>2</sup> + 6x + 1")+" квадрат үшмүшесінің неше түбірі бар?",
+  opts:["Бір түбірі бар","Екі түбірі бар","Түбірі жоқ","Шексіз көп түбірі бар"], correct:0},
+ {type:"mc", q:m("x = −4")+" саны "+m("x<sup>2</sup> + px − 8")+" квадрат үшмүшесінің түбірі. "+m("p")+" коэффициентін табыңыз.",
+  opts:[m("2"), m("−2"), m("4"), m("6")], correct:0},
+ {type:"num", q:m("x<sup>2</sup> + 4x − 21")+" квадрат үшмүшесінің түбірлерін табыңыз. Жауапқа <b>кіші түбірін</b> жазыңыз.",
+  answer:-7},
+ {type:"num", q:m("x = −3")+" саны "+m("2x<sup>2</sup> + 5x + c")+" квадрат үшмүшесінің түбірі. "+m("c")+" санын табыңыз.",
+  answer:-3}
+]};
+
+/* ================= КҮЙ ================= */
+let S = {fio:"",klass:"",variant:"",qs:[],idx:0,answers:[],timeLeft:TIME_PER_Q,
+         timerId:null,hiddenCount:0,running:false,startedAt:null,payload:null};
+
+const $ = id => document.getElementById(id);
+
+/* ---------- Бастапқы терезе ---------- */
+function checkStart(){
+  const v = document.querySelector('input[name=variant]:checked');
+  document.querySelectorAll('#variantBox label').forEach(l=>l.classList.toggle('sel', l.querySelector('input').checked));
+  $('startBtn').disabled = !($('fio').value.trim().length >= 3 && $('klass').value && v);
+}
+$('fio').addEventListener('input',checkStart);
+$('klass').addEventListener('change',checkStart);
+document.querySelectorAll('input[name=variant]').forEach(r=>r.addEventListener('change',checkStart));
+
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+$('startBtn').addEventListener('click',()=>{
+  S.fio = $('fio').value.trim().replace(/\s+/g,' ');
+  S.klass = $('klass').value;
+  S.variant = document.querySelector('input[name=variant]:checked').value;
+  // нұсқалардың ретін араластыру
+  S.qs = VARIANTS[S.variant].map(q=>{
+    if(q.type!=="mc") return {...q};
+    const order = shuffle(q.opts.map((_,i)=>i));
+    return {...q, opts:order.map(i=>q.opts[i]), correct:order.indexOf(q.correct)};
+  });
+  S.answers = new Array(S.qs.length).fill(null);
+  S.idx = 0; S.hiddenCount = 0; S.running = true; S.startedAt = Date.now();
+  $('startScreen').classList.add('hidden');
+  $('quizScreen').classList.remove('hidden');
+  showQuestion();
+});
+
+/* ---------- Сұрақты көрсету ---------- */
+function showQuestion(){
+  const q = S.qs[S.idx], n = S.qs.length;
+  $('qCounter').textContent = 'Сұрақ '+(S.idx+1)+' / '+n;
+  $('progressBar').style.width = (S.idx/n*100)+'%';
+  $('qNum').textContent = (S.idx+1)+'-тапсырма'+(q.type==="num"?' (жауабын сан түрінде енгізіңіз)':' (бір дұрыс жауапты таңдаңыз)');
+  $('qText').innerHTML = q.q;
+  const body = $('qBody');
+  if(q.type==="mc"){
+    const L = ['A','B','C','D'];
+    body.innerHTML = '<ul class="opts">'+q.opts.map((o,i)=>
+      '<li><label><input type="radio" name="ans" value="'+i+'"><span class="letter">'+L[i]+')</span><span>'+o+'</span></label></li>').join('')+'</ul>';
+    body.querySelectorAll('input[name=ans]').forEach(r=>r.addEventListener('change',()=>{
+      body.querySelectorAll('label').forEach(l=>l.classList.toggle('sel', l.querySelector('input').checked));
+    }));
+  } else {
+    body.innerHTML = '<div class="numbox"><input type="text" id="numAns" inputmode="decimal" autocomplete="off" placeholder="Жауап">'+
+      '<button type="button" class="minus" id="minusBtn">( − ) минус таңбасын қою / алып тастау</button>'+
+      '<div class="hint">Бөлшек сан болса, үтір немесе нүкте арқылы жазыңыз (мысалы: 2,5).</div></div>';
+    const inp = $('numAns');
+    inp.addEventListener('input',()=>{ // тек сандар, минус, үтір/нүкте
+      let v = inp.value.replace(/[^\d.,\-−]/g,'').replace(/−/g,'-');
+      const neg = v.startsWith('-'); v = v.replace(/-/g,'');
+      inp.value = (neg?'-':'')+v;
+    });
+    $('minusBtn').addEventListener('click',()=>{
+      inp.value = inp.value.startsWith('-') ? inp.value.slice(1) : '-'+inp.value;
+      inp.focus();
+    });
+  }
+  $('nextBtn').textContent = S.idx===n-1 ? 'Тестті аяқтау' : 'Келесі →';
+  startTimer();
+}
+
+/* ---------- Жауапты сақтау ---------- */
+function saveAnswer(){
+  const q = S.qs[S.idx];
+  if(q.type==="mc"){
+    const r = document.querySelector('input[name=ans]:checked');
+    S.answers[S.idx] = r ? +r.value : null;
+  } else {
+    const v = ($('numAns').value||'').trim().replace(',','.');
+    S.answers[S.idx] = (v===''||v==='-'||isNaN(+v)) ? null : +v;
+  }
+}
+
+function next(){
+  clearInterval(S.timerId);
+  saveAnswer();
+  if(S.idx < S.qs.length-1){ S.idx++; showQuestion(); }
+  else finish();
+}
+$('nextBtn').addEventListener('click',next);
+
+/* ---------- Таймер ---------- */
+function fmt(s){return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+function startTimer(){
+  clearInterval(S.timerId);
+  S.timeLeft = TIME_PER_Q;
+  const deadline = Date.now() + TIME_PER_Q*1000;
+  const tick = ()=>{
+    S.timeLeft = Math.max(0, Math.round((deadline-Date.now())/1000));
+    $('timer').textContent = fmt(S.timeLeft);
+    $('timer').classList.toggle('low', S.timeLeft<=20);
+    if(S.timeLeft<=0) next();
+  };
+  tick(); S.timerId = setInterval(tick,500);
+}
+
+/* ---------- Бетті жасыруды бақылау ---------- */
+document.addEventListener('visibilitychange',()=>{
+  if(!S.running) return;
+  if(document.hidden){
+    S.hiddenCount++;
+  } else {
+    $('warnCount').textContent = 'Жасыру саны: '+S.hiddenCount;
+    $('warnOverlay').classList.remove('hidden');
+  }
+});
+$('warnOk').addEventListener('click',()=>$('warnOverlay').classList.add('hidden'));
+
+/* ---------- Аяқтау ---------- */
+function finish(){
+  S.running = false;
+  clearInterval(S.timerId);
+  $('warnOverlay').classList.add('hidden');
+  let correct = 0;
+  const detail = S.qs.map((q,i)=>{
+    const a = S.answers[i];
+    const ok = q.type==="mc" ? a===q.correct : (a!==null && Math.abs(a-q.answer)<1e-9);
+    if(ok) correct++;
+    return (i+1)+':'+(ok?'+':'−');
+  }).join(' ');
+  const penalty = S.hiddenCount>0 ? PENALTY : 0;
+  const finalScore = Math.max(0, correct - penalty);
+  const minutes = Math.round((Date.now()-S.startedAt)/600)/100;
+
+  // осы құрылғыдағы тапсыру саны (резерв ретінде)
+  const key = 'kv_ushmushe_8211_'+S.fio.toLowerCase()+'_'+S.klass;
+  let localAttempts = 1;
+  try{ localAttempts = (+localStorage.getItem(key)||0)+1; localStorage.setItem(key,localAttempts);}catch(e){}
+
+  S.payload = {fio:S.fio, klass:S.klass, variant:S.variant, correct:correct, penalty:penalty,
+    score:finalScore, max:10, hidden:S.hiddenCount>0?'Иә':'Жоқ', hiddenCount:S.hiddenCount,
+    minutes:minutes, detail:detail, localAttempts:localAttempts,
+    topic:'Квадрат үшмүше және оның түбірлері (8.2.1.1)'};
+
+  $('quizScreen').classList.add('hidden');
+  $('resultScreen').classList.remove('hidden');
+  $('resName').textContent = S.fio+', '+S.klass+' сынып, '+S.variant+'-нұсқа';
+  $('resScore').textContent = finalScore+' / 10';
+  $('resTable').innerHTML =
+    '<tr><td>Дұрыс жауаптар:</td><td>'+correct+' / 10</td></tr>'+
+    '<tr><td>Бетті жасыру саны:</td><td>'+S.hiddenCount+'</td></tr>'+
+    '<tr><td>Айып балл:</td><td>'+(penalty?'−'+penalty:'0')+'</td></tr>'+
+    '<tr><td>Қорытынды балл:</td><td><b>'+finalScore+' / 10</b></td></tr>';
+  send();
+}
+
+function send(){
+  $('sendStatus').className='status'; $('sendStatus').textContent='Нәтиже жіберілуде...';
+  $('resendBtn').classList.add('hidden');
+  if(!SCRIPT_URL || SCRIPT_URL.indexOf('http')!==0){
+    $('sendStatus').className='status err';
+    $('sendStatus').textContent='Apps Script сілтемесі (SCRIPT_URL) көрсетілмеген — нәтиже жіберілмеді.';
+    return;
+  }
+  fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify(S.payload)})
+  .then(()=>{ $('sendStatus').className='status ok'; $('sendStatus').textContent='✔ Нәтиже мұғалімге жіберілді.'; })
+  .catch(()=>{ $('sendStatus').className='status err';
+    $('sendStatus').textContent='Нәтиже жіберілмеді. Интернетті тексеріп, «Қайта жіберу» батырмасын басыңыз.';
+    $('resendBtn').classList.remove('hidden'); });
+}
+$('resendBtn').addEventListener('click',send);
+
+/* Тест кезінде бетті жабуға тырысса — ескерту */
+window.addEventListener('beforeunload',e=>{ if(S.running){ e.preventDefault(); e.returnValue=''; } });
+</script>
+</body>
+</html>
